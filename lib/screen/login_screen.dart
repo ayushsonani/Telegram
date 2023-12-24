@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:telegram/controller/logics.dart';
 import 'package:telegram/controller/uicontroller.dart';
@@ -9,17 +10,19 @@ import 'package:telegram/screen/otp_screen.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
+  TextEditingController phone = TextEditingController();
+  TextEditingController otp = TextEditingController();
+  TextEditingController country = TextEditingController();
+  FocusNode phonefoc = FocusNode();
+  FocusNode otpfoc = FocusNode();
   @override
   Widget build(BuildContext context) {
+
     Controller controller = Provider.of(context);
-    TextEditingController phone = TextEditingController();
-    TextEditingController otp = TextEditingController();
-    FocusNode phonefoc = FocusNode();
-    FocusNode otpfoc = FocusNode();
+
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
        body: Column(
          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -54,6 +57,7 @@ class LoginScreen extends StatelessWidget {
              child: Column(
                children: [
                 TextFormField(
+                  controller: country,
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.arrow_forward_ios_rounded),
                     contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -67,9 +71,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                  SizedBox(height: 15,),
                  TextFormField(
-                   focusNode: phonefoc,
                    controller: phone,
-                   onEditingComplete: () => otpfoc.requestFocus(),
                    decoration: InputDecoration(
                        suffixIcon: Icon(Icons.arrow_forward_ios_rounded),
                        contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -81,23 +83,6 @@ class LoginScreen extends StatelessWidget {
                        )
                    ),
                  ),
-                 SizedBox(height: 15,),
-                 TextFormField(
-                   focusNode: otpfoc,
-                   controller: otp,
-                   decoration: InputDecoration(
-                       suffixIcon: Icon(Icons.arrow_forward_ios_rounded),
-                       contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                       labelText: "otp",
-                       labelStyle: TextStyle(color: Colors.black.withOpacity(0.3),fontSize: 20),
-                       enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: 1.2,color: Colors.black.withOpacity(0.3)
-                       )
-                       ),
-                       focusedBorder: OutlineInputBorder(
-                           borderSide: BorderSide(width: 2,color: Colors.blue,)
-                       )
-                   ),
-                 )
                ],
              ),
            )),
@@ -106,22 +91,11 @@ class LoginScreen extends StatelessWidget {
              mainAxisAlignment: MainAxisAlignment.center,
              children: [
                ElevatedButton(onPressed: () async {
-                await controller.phone_auth(phone.text);
-                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                   return ChangeNotifierProvider(create: (context) => Controller(),child: OtpScreen(),);
-                 },));
+                await controller.phone_auth(phone.text,context);
                }, child: Text("Send Otp"))
              ],
            ),
 
-           Row(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               ElevatedButton(onPressed: () async {
-                 controller.otp_chack(otp.text);
-               }, child: Text("Verify Otp"))
-             ],
-           ),
 
            Row(
              mainAxisAlignment: MainAxisAlignment.center,

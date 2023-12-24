@@ -1,59 +1,159 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:telegram/controller/logics.dart';
+import 'package:flutter/services.dart';
 
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    Controller controller = Provider.of(context);
-
-    TextEditingController num1cont = TextEditingController();
-    TextEditingController num2cont = TextEditingController();
-    TextEditingController num3cont = TextEditingController();
-    TextEditingController num4cont = TextEditingController();
-    TextEditingController num5cont = TextEditingController();
-    TextEditingController num6cont = TextEditingController();
-
-    FocusNode num1 =FocusNode();
-    FocusNode num2 =FocusNode();
-    FocusNode num3 =FocusNode();
-    FocusNode num4 =FocusNode();
-    FocusNode num5 =FocusNode();
-    FocusNode num6 =FocusNode();
-
+    TextEditingController q1=TextEditingController();
+    TextEditingController q2=TextEditingController();
+    TextEditingController q3=TextEditingController();
+    TextEditingController q4=TextEditingController();
+    TextEditingController q5=TextEditingController();
+    TextEditingController q6=TextEditingController();
+    TextEditingController otp = TextEditingController();
     return Scaffold(
       appBar: AppBar(),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                padding: EdgeInsets.all(4),
-                width: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 2,color: Colors.blue)
-                ),
-                alignment: Alignment.center,
-                child: TextField(maxLength: 1,controller: num1cont,focusNode: num1,onEditingComplete: () => num2.requestFocus(),),
+          Text("Enter a Otp "),
+          Form(child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [
+            Container(
+              alignment: Alignment.center,
+              height: 58,
+              width: 58,
+              child: TextFormField(
+                controller: q1,
+                onSaved: (newValue) {
+                  print("1");
+                },
+                style: Theme.of(context).textTheme.headline6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if(value.length == 1){
+                    FocusScope.of(context).nextFocus();
+                  }
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
               ),
-              Container(
-                padding: EdgeInsets.all(4),
-                width: 35,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 2,color: Colors.blue)
-                ),
-                alignment: Alignment.center,
-                child: TextField(controller: num2cont,focusNode: num2,onEditingComplete: () => num2.requestFocus(),),
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: 58,
+              width: 58,
+              child: TextFormField(
+                controller: q2,
+                onSaved: (newValue) {
+                  print("------------------------------------1");
+                },
+                style: Theme.of(context).textTheme.headline6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if(value.length == 1){
+                    FocusScope.of(context).nextFocus();
+                  }
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
               ),
-            ],
-          )
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: 58,
+              width: 58,
+              child: TextFormField(
+                controller: q3,
+                onSaved: (newValue) {
+                  print("1");
+                },
+                style: Theme.of(context).textTheme.headline6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if(value.length == 1){
+                    FocusScope.of(context).nextFocus();
+                  }
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: 58,
+              width: 58,
+              child: TextFormField(
+                controller: q4,
+                onSaved: (newValue) {
+                  print("1");
+                },
+                style: Theme.of(context).textTheme.headline6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if(value.length == 1){
+                    FocusScope.of(context).nextFocus();
+                  }
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: 58,
+              width: 58,
+              child: TextFormField(
+                controller: q5,
+                onSaved: (newValue) {
+                  print("1");
+                },
+                style: Theme.of(context).textTheme.headline6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if(value.length == 1){
+                    FocusScope.of(context).nextFocus();
+                  }
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: 58,
+              width: 58,
+              child: TextFormField(
+                controller: q6,
+                onSaved: (newValue) {
+                  print("1");
+                },
+                style: Theme.of(context).textTheme.headline6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if(value.length == 1){
+                    FocusScope.of(context).nextFocus();
+                    otp.text = q1.text+q2.text+q3.text+q4.text+q5.text+q6.text;
+                    print("gggggggggggggggggggggggggggggggggggggggggggggggg:= ${otp.text}");
+                  }
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+            ),
+          ],))
         ],
       ),
     );

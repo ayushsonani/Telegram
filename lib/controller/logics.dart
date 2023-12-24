@@ -2,10 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+
+import '../screen/otp_screen.dart';
 
 class Controller extends ChangeNotifier {
   String phone_verify_id ="";
-  phone_auth(String phone) async {
+  phone_auth(String phone,BuildContext context) async {
     phone = "+91" + phone;
     print("phone := ${phone}");
    await FirebaseAuth.instance.verifyPhoneNumber(verificationCompleted: (phoneAuthCredential) {
@@ -22,6 +25,10 @@ class Controller extends ChangeNotifier {
 
     print("verify id := ${phone_verify_id}");
     notifyListeners();
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ChangeNotifierProvider(create: (context) => Controller(),child: OtpScreen(),);
+    },));
+
   }
 
   otp_chack(String otp){
