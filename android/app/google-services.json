@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "270169112241",
+    "project_id": "telegaram-d2593",
+    "storage_bucket": "telegaram-d2593.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270169112241:android:0e7eefcd0b62e8c5e92c90",
+        "android_client_info": {
+          "package_name": "com.example.telegram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaE2XaB0l29AK_dzaO4m1rv81aDzB41Pk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
