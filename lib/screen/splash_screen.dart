@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:telegram/controller/logics.dart';
+import 'package:telegram/screen/home_screen.dart';
 import 'package:telegram/screen/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,11 +41,32 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     });
 
     Future.delayed(Duration(seconds: 2)).then((value) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return ChangeNotifierProvider(create: (context) => Controller(),child: LoginScreen());
-      },));
+
+      getdata();
+
     });
   }
+
+  getdata() async {
+    var data =await  FirebaseFirestore.instance.collection('user').get();
+
+
+    for(int i=0; i<data.docs.length; i++){
+      if(data.docs[i].data()['user_id']==FirebaseAuth.instance.currentUser?.uid){
+
+        Controller.mobile_number = data.docs[i].data()['mobile'];
+        print("-----------=========== mobail number =======${Controller.mobile_number}");
+      }
+  }
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return ChangeNotifierProvider(create: (context) => Controller(),child: FirebaseAuth.instance.currentUser?.uid==null?LoginScreen():HomeScreen());
+    },));
+
+
+
+  }
+
 
   @override
   Widget build(BuildContext context) {

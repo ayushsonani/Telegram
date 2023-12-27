@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:telegram/controller/logics.dart';
+import 'package:telegram/screen/profile_edit_screen.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen({super.key});
-
+  TextEditingController q1=TextEditingController();
+  TextEditingController q2=TextEditingController();
+  TextEditingController q3=TextEditingController();
+  TextEditingController q4=TextEditingController();
+  TextEditingController q5=TextEditingController();
+  TextEditingController q6=TextEditingController();
+  TextEditingController otp = TextEditingController();
+  String phone_verify_id = "";
+  OtpScreen(this.phone_verify_id);
   @override
   Widget build(BuildContext context) {
-    TextEditingController q1=TextEditingController();
-    TextEditingController q2=TextEditingController();
-    TextEditingController q3=TextEditingController();
-    TextEditingController q4=TextEditingController();
-    TextEditingController q5=TextEditingController();
-    TextEditingController q6=TextEditingController();
-    TextEditingController otp = TextEditingController();
+Controller controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text("Enter a Otp "),
           Form(child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [
             Container(
               alignment: Alignment.center,
-              height: 58,
-              width: 58,
+              height: MediaQuery.of(context).size.height/15.5,
+              width: MediaQuery.of(context).size.width/7.5,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                border: Border.all(width: 1,),
+                borderRadius: BorderRadius.circular(15)
+              ),
               child: TextFormField(
                 controller: q1,
                 onSaved: (newValue) {
@@ -43,8 +53,13 @@ class OtpScreen extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.center,
-              height: 58,
-              width: 58,
+              height: MediaQuery.of(context).size.height/15.5,
+              width: MediaQuery.of(context).size.width/7.5,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  border: Border.all(width: 1,),
+                  borderRadius: BorderRadius.circular(15)
+              ),
               child: TextFormField(
                 controller: q2,
                 onSaved: (newValue) {
@@ -65,8 +80,13 @@ class OtpScreen extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.center,
-              height: 58,
-              width: 58,
+              height: MediaQuery.of(context).size.height/15.5,
+              width: MediaQuery.of(context).size.width/7.5,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  border: Border.all(width: 1,),
+                  borderRadius: BorderRadius.circular(15)
+              ),
               child: TextFormField(
                 controller: q3,
                 onSaved: (newValue) {
@@ -87,8 +107,13 @@ class OtpScreen extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.center,
-              height: 58,
-              width: 58,
+              height: MediaQuery.of(context).size.height/15.5,
+              width: MediaQuery.of(context).size.width/7.5,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  border: Border.all(width: 1,),
+                  borderRadius: BorderRadius.circular(15)
+              ),
               child: TextFormField(
                 controller: q4,
                 onSaved: (newValue) {
@@ -109,8 +134,13 @@ class OtpScreen extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.center,
-              height: 58,
-              width: 58,
+              height: MediaQuery.of(context).size.height/15.5,
+              width: MediaQuery.of(context).size.width/7.5,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  border: Border.all(width: 1,),
+                  borderRadius: BorderRadius.circular(15)
+              ),
               child: TextFormField(
                 controller: q5,
                 onSaved: (newValue) {
@@ -131,8 +161,13 @@ class OtpScreen extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.center,
-              height: 58,
-              width: 58,
+              height: MediaQuery.of(context).size.height/15.5,
+              width: MediaQuery.of(context).size.width/7.5,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  border: Border.all(width: 1,),
+                  borderRadius: BorderRadius.circular(15)
+              ),
               child: TextFormField(
                 controller: q6,
                 onSaved: (newValue) {
@@ -153,7 +188,17 @@ class OtpScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ],))
+          ],)),
+
+          ElevatedButton(onPressed: () {
+            // otp is true or not check this function use
+            controller.otp_chack(otp.text,phone_verify_id);
+
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ChangeNotifierProvider(create: (context) => Controller(),child: ProfileEditScreen(),);
+            },));
+
+          }, child: Text("Submit"))
         ],
       ),
     );
