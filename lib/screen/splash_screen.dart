@@ -55,9 +55,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       if(data.docs[i].data()['user_id']==FirebaseAuth.instance.currentUser?.uid){
 
         Controller.mobile_number = data.docs[i].data()['mobile'];
+        Controller.doc_id_sender = data.docs[i].id;
         print("-----------=========== mobail number =======${Controller.mobile_number}");
       }
   }
+
+
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return ChangeNotifierProvider(create: (context) => Controller(),child: FirebaseAuth.instance.currentUser?.uid==null?LoginScreen():HomeScreen());

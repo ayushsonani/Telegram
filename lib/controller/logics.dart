@@ -114,16 +114,29 @@ class Controller extends ChangeNotifier {
     print("%%%%%%%%% ${data.docs[i].data()['mobile']}%%%%%%%%%");
 
     if(data.docs[i].data()['mobile']==mobile_number){
-      await FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${mobile_number}").collection("${phone2}").add({
-        "number":phone2
-      });
+
+      doc_id_sender= data.docs[i].id;
+
+       FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${phone2}").set({
+         "join time":"${DateTime.now()}"
+       });
+
+      FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${phone2}").collection('message');
+
     }
 
     if(data.docs[i].data()['mobile']=="${phone2}"){
       print("=============================\n\n\n\n\n\n         phone := ${mobile_number}");
-      await FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${phone2}").collection("${mobile_number}").add({
-        "number":mobile_number
-      });
+
+
+      doc_id_rsever = data.docs[i].id;
+
+      FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${mobile_number}").set(
+          {
+            "join time":"${DateTime.now()}"
+          });
+      FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${mobile_number}").collection("${mobile_number}");
+
     }
   }
 
@@ -151,16 +164,16 @@ class Controller extends ChangeNotifier {
      }
    }
 
-    FirebaseFirestore.instance.collection('user').doc(doc_id_sender).collection('chat').doc("${mobile_number}").collection("${mobile_rsever}").add({
+    FirebaseFirestore.instance.collection('user').doc(doc_id_sender).collection('chat').doc("${mobile_rsever}").collection("message").add({
       "to":mobile_rsever,
-      "from":mobile_rsever,
+      "from":mobile_number,
       "time":"${DateTime.now()}",
       "message":message
     });
 
-   FirebaseFirestore.instance.collection('user').doc(doc_id_rsever).collection('chat').doc("${mobile_rsever}").collection("${mobile_number}").add({
+   FirebaseFirestore.instance.collection('user').doc(doc_id_rsever).collection('chat').doc("${mobile_number}").collection("message").add({
      "to":mobile_rsever,
-     "from":mobile_rsever,
+     "from":mobile_number,
      "time":"${DateTime.now()}",
      "message":message
    });
