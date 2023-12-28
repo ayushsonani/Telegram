@@ -16,6 +16,8 @@ import '../screen/otp_screen.dart';
 class Controller extends ChangeNotifier {
   String phone_verify_id ="";
  static String mobile_number = "";
+ static List<UserData> userDataList = [];
+
   phone_auth(String phone,BuildContext context) async {
     phone = "+91" + phone;
     mobile_number = phone;
@@ -100,8 +102,11 @@ class Controller extends ChangeNotifier {
    }
 
 
-  user_data_add(String name){
-  UserData userData = UserData(name: name, userid: user_id, profile_img: progile_image_url);
+  user_data_add(String name,String mobile){
+  UserData userData = UserData(mobile: mobile,name: name, userid: user_id, profile_img: progile_image_url);
+
+  userDataList.add(userData);
+
   }
 
   chat_user_add(String phone2) async {
@@ -114,37 +119,34 @@ class Controller extends ChangeNotifier {
     print("%%%%%%%%% ${data.docs[i].data()['mobile']}%%%%%%%%%");
 
     if(data.docs[i].data()['mobile']==mobile_number){
-
-      doc_id_sender= data.docs[i].id;
-
-       FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${phone2}").set({
-         "join time":"${DateTime.now()}"
-       });
-
-      FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${phone2}").collection('message');
-
+      doc_id_sender = data.docs[i].id;
+      user_chat_data_online(phone2,doc_id_sender);
     }
 
     if(data.docs[i].data()['mobile']=="${phone2}"){
       print("=============================\n\n\n\n\n\n         phone := ${mobile_number}");
-
-
-      doc_id_rsever = data.docs[i].id;
-
-      FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${mobile_number}").set(
-          {
-            "join time":"${DateTime.now()}"
-          });
-      FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${mobile_number}").collection("${mobile_number}");
-
+      doc_id_rsever.add(data.docs[i].id);
+      user_chat_data_online(phone2,data.docs[i].id);
     }
   }
 
 
   }
+
+
+  user_chat_data_online(String phone,String doc_id){
+    FirebaseFirestore.instance.collection('user').doc(doc_id).collection('chat').doc("${phone}").set({
+      "join time":"${DateTime.now()}",
+
+    });
+
+    FirebaseFirestore.instance.collection('user').doc(doc_id).collection('chat').doc("${phone}").collection('message');
+
+  }
+
   static String doc_id_sender ="";
-  static String mobile_rsever ="";
-  static String doc_id_rsever ="";
+  static List<String> mobile_rsever =[];
+  static List<String> doc_id_rsever =[];
   send_massage({required String message,required String to,}) async {
 
    var data =await  FirebaseFirestore.instance.collection('user').get();
@@ -153,30 +155,33 @@ class Controller extends ChangeNotifier {
    for(int i=0; i<data.docs.length; i++){
      if(data.docs[i].data()['mobile']==mobile_number){
        doc_id_sender= data.docs[i].id;
-
+       FirebaseFirestore.instance.collection('user').doc(doc_id_sender).collection('chat').doc("${mobile_rsever}").collection("message").add({
+         "to":mobile_rsever,
+         "from":mobile_number,
+         "time":"${DateTime.now()}",
+         "message":message
+       });
        print("-----------=========== doc_id_sender =======${data.docs[i].id}");
      }
      if(data.docs[i].data()['mobile']==to){
-       doc_id_rsever = data.docs[i].id;
-       mobile_rsever = data.docs[i].data()['mobile'];
+       FirebaseFirestore.instance.collection('user').doc(data.docs[i].id).collection('chat').doc("${mobile_number}").collection("message").add({
+         "to":mobile_rsever,
+         "from":mobile_number,
+         "time":"${DateTime.now()}",
+         "message":message
+       });
+       // doc_id_rsever.add(data.docs[i].id);
+       // mobile_rsever.add(data.docs[i].data()['mobile']);
        print("-----------==============     mobile_rsever   ====${mobile_rsever}");
 
      }
    }
 
-    FirebaseFirestore.instance.collection('user').doc(doc_id_sender).collection('chat').doc("${mobile_rsever}").collection("message").add({
-      "to":mobile_rsever,
-      "from":mobile_number,
-      "time":"${DateTime.now()}",
-      "message":message
-    });
 
-   FirebaseFirestore.instance.collection('user').doc(doc_id_rsever).collection('chat').doc("${mobile_number}").collection("message").add({
-     "to":mobile_rsever,
-     "from":mobile_number,
-     "time":"${DateTime.now()}",
-     "message":message
-   });
+
+
+
+
 
   }
   
