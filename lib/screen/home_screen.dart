@@ -14,12 +14,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Controller controller = Provider.of(context);
+
     print(
         "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! data sender := ${Controller.doc_id_sender}");
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        child: StreamBuilder(
+        child: Controller.show
+            ? StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('user')
               .doc('${Controller.doc_id_sender}')
@@ -33,48 +35,67 @@ class HomeScreen extends StatelessWidget {
               return ListView.builder(
                 itemCount: snapshot.data?.size,
                 itemBuilder: (context, index) {
-                  return StreamBuilder(stream: FirebaseFirestore.instance.collection('user').doc(Controller.doc_id_sender).snapshots(),
-                      builder: (context, snapshot2) {
-                        if(snapshot2.hasData){
-                          return ListTile(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return ChangeNotifierProvider(
-                                    create: (context) => Controller(),
-                                    child: ChatScreen(snapshot.data?.docs[index].id),
-                                  );
-                                },
-                              ));
-                            },
-                            leading: CircleAvatar(backgroundImage: NetworkImage(snapshot2.data?.data()?['profile_img']),),
-                            title: Text("${snapshot2.data?.data()?['name']}"),
-                          );
-                        }
-                        else{
-                          return ListTile(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return ChangeNotifierProvider(
-                                    create: (context) => Controller(),
-                                    child: ChatScreen(snapshot.data?.docs[index].id),
-                                  );
-                                },
-                              ));
-                            },
-                            leading: CircleAvatar(backgroundColor: Colors.blue,),
-                            title: Text("${snapshot.data?.docs[index].id}"),
-                          );
-                        }
-                      },);
+                  return StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('user')
+                        .doc(Controller.doc_id_sender)
+                        .collection('chat')
+                        .snapshots(),
+                    builder: (context, snapshot2) {
+                      if (snapshot2.hasData) {
+                        return ListTile(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return ChangeNotifierProvider(
+                                  create: (context) => Controller(),
+                                  child: ChatScreen(
+                                      snapshot.data?.docs[index].id),
+                                );
+                              },
+                            ));
+                          },
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(snapshot2
+                                .data?.docs[index]['profile_img']),
+                          ),
+                          title: Text(
+                              "${snapshot2.data?.docs[index]['name']}"),
+                        );
+                      } else {
+                        return ListTile(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return ChangeNotifierProvider(
+                                  create: (context) => Controller(),
+                                  child: ChatScreen(
+                                      snapshot.data?.docs[index].id),
+                                );
+                              },
+                            ));
+                          },
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blue,
+                          ),
+                          title: Text("${snapshot.data?.docs[index].id}"),
+                        );
+                      }
+                    },
+                  );
                 },
               );
-            } else {
+            }
+            else if(snapshot.hasError){
+
+              return Container();
+            }
+            else {
               return Center(child: CircularProgressIndicator());
             }
           },
-        ),
+        )
+            : Container(),
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
