@@ -10,17 +10,22 @@ class HomeScreen extends StatelessWidget {
   // const HomeScreen({super.key});
 
   TextEditingController phone = TextEditingController();
-
+  bool list_avalabel = false;
   @override
   Widget build(BuildContext context) {
     Controller controller = Provider.of(context);
 
-    print(
-        "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! data sender := ${Controller.doc_id_sender}");
+    list_avalabel = Controller.show;
+
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! data sender := ${Controller.doc_id_sender}");
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Home"),
+        backgroundColor: Colors.deepPurple.shade400,
+      ),
       body: Container(
-        child: Controller.show
+        padding: EdgeInsets.all(8),
+        child: list_avalabel
             ? StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('user')
@@ -43,24 +48,28 @@ class HomeScreen extends StatelessWidget {
                         .snapshots(),
                     builder: (context, snapshot2) {
                       if (snapshot2.hasData) {
-                        return ListTile(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return ChangeNotifierProvider(
-                                  create: (context) => Controller(),
-                                  child: ChatScreen(
-                                      snapshot.data?.docs[index].id),
-                                );
-                              },
-                            ));
-                          },
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(snapshot2
-                                .data?.docs[index]['profile_img']),
+                        return Card(
+                          elevation: 10,
+                          color: Colors.deepPurple.shade400,
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return ChangeNotifierProvider(
+                                    create: (context) => Controller(),
+                                    child: ChatScreen(
+                                        snapshot.data?.docs[index].id),
+                                  );
+                                },
+                              ));
+                            },
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(snapshot2
+                                  .data?.docs[index]['profile_img']),
+                            ),
+                            title: Text(
+                                "${snapshot2.data?.docs[index]['name']}",style: TextStyle(color: Colors.white)),
                           ),
-                          title: Text(
-                              "${snapshot2.data?.docs[index]['name']}"),
                         );
                       } else {
                         return ListTile(
@@ -85,10 +94,6 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               );
-            }
-            else if(snapshot.hasError){
-
-              return Container();
             }
             else {
               return Center(child: CircularProgressIndicator());

@@ -16,6 +16,11 @@ import 'package:telegram/screen/home_screen.dart';
 import '../screen/otp_screen.dart';
 
 class Controller extends ChangeNotifier {
+
+  Controller(){
+    get_share_preference();
+  }
+
   String phone_verify_id = "";
   static String mobile_number = "";
   static List<UserData> userDataList = [];
@@ -182,12 +187,9 @@ class Controller extends ChangeNotifier {
   static List<String> mobile_rsever = [];
   static List<String> doc_id_rsever = [];
 
-  send_massage({
-    required String message,
-    required String to,
-  }) async {
+  send_massage({required String message,required String to,String image_url=""}) async {
     var data = await FirebaseFirestore.instance.collection('user').get();
-
+    print("~~~~~~~~~~~~~~~~~~~~~~ image url := ${image_url}");
     for (int i = 0; i < data.docs.length; i++) {
       print("object");
       if (data.docs[i].data()['mobile'] == mobile_number) {
@@ -202,7 +204,8 @@ class Controller extends ChangeNotifier {
           "to": to,
           "from": mobile_number,
           "time": "${DateTime.now()}",
-          "message": message
+          "message": message,
+          "image":image_url
         });
         print("-----------=========== doc_id_sender =======${data.docs[i].id}");
       }
@@ -217,7 +220,8 @@ class Controller extends ChangeNotifier {
           "to": to,
           "from": mobile_number,
           "time": "${DateTime.now()}",
-          "message": message
+          "message": message,
+          "image":image_url
         });
         // doc_id_rsever.add(data.docs[i].id);
         // mobile_rsever.add(data.docs[i].data()['mobile']);
@@ -228,5 +232,43 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
+  ImagePicker picker = ImagePicker();
+  File? user_send_img;
+  get_image() async {
+    XFile? images =await picker.pickImage(source: ImageSource.gallery);
+    if(images!=null){
+      user_send_img = File(images.path);
+    }
+  }
+
+  send_image({required String to}) async {
+
+    String image_url = "";
+    print("user_inmg is null := ${user_send_img?.path}");
+    if(user_send_img!=null){
+        UploadTask uploadTask =  FirebaseStorage.instance.ref('user').child("chat").child("${to}").child("${DateTime.now()}").putFile(user_send_img!);
+
+      TaskSnapshot taskSnapshot = await uploadTask;
+
+      image_url =await taskSnapshot.ref.getDownloadURL();
+
+      print("---------- image url := ${image_url}");
+
+      send_massage(message: "", to: to,image_url: image_url);
+
+    }
+
+
+  }
+
   static bool show = false;
+
+  get_share_preference() async {
+    Controller.sharedPreferences = await SharedPreferences.getInstance();
+
+    show = Controller.sharedPreferences?.getBool('show') ?? false;
+    print(" show is := ${show}");
+    notifyListeners();
+  }
+
 }

@@ -26,27 +26,27 @@ class _SplashScreenState extends State<SplashScreen>
     animationController.dispose();
   }
 
-  get_share_preference() async {
-    Controller.sharedPreferences = await SharedPreferences.getInstance();
 
-    Controller.show = Controller.sharedPreferences?.getBool('show') ?? false;
-
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // get_share_preference();
+
     animationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 2))
           ..repeat();
     print("value := ${animationController.value}");
     animationController.addListener(() {
       opaciy_ani = animationController.value;
-      print("opacity := ${opaciy_ani}");
       setState(() {});
       // animationController.animateTo(duration: Duration(seconds: 1));
     });
+
+    if(FirebaseAuth.instance.currentUser?.uid!=""){
+      getData();
+    }
 
     Future.delayed(const Duration(seconds: 2)).then((value) {
       Navigator.pushReplacement(context, MaterialPageRoute(
@@ -59,7 +59,6 @@ class _SplashScreenState extends State<SplashScreen>
         },
       ));
 
-      FirebaseAuth.instance.currentUser?.uid == "" ? null : getData();
     });
   }
 
@@ -71,8 +70,7 @@ class _SplashScreenState extends State<SplashScreen>
           FirebaseAuth.instance.currentUser?.uid) {
         Controller.mobile_number = data.docs[i].data()['mobile'];
         Controller.doc_id_sender = data.docs[i].id;
-        print(
-            "-----------=========== mobile number =======${Controller.mobile_number}");
+        print("-----------=========== mobile number =======${Controller.mobile_number}");
       }
     }
   }
